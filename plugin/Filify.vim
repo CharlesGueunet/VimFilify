@@ -23,9 +23,22 @@ if(!exists("g:filify_recurse"))
    let g:filify_recurse = 1
 endif
 
+" Which separator to use when storing the file
+" into the variable
+if(!exists("g:filify_sep"))
+   let g:filify_sep = " "
+endif
+
 " Functions
 """""""""""
 
+" Go to parent
 function! Filify#parent(path)
    return fnamemodify(a:path, ":p:h:h")
+endfunction
+
+" Store a file into a variable
+function! Filify#file2var(file, ...)
+   let sep = (a:0 >= 1)? a:1 : " "
+   return join(readfile(a:file), sep)
 endfunction
