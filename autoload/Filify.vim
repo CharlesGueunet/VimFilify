@@ -23,5 +23,5 @@ function! Filify#process(...) abort
    endif
 
    " file not found
-   return 0
+   return ""
 endfunction
