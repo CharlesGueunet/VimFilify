@@ -13,20 +13,26 @@
 " Global variables are just for non advanced use.
 
 " Name of the config file searched in the lookup
-if(!exists("g:filify_filename"))
-   let g:filify_filename = "filify.conf"
+if(!exists('g:filify_filename'))
+   let g:filify_filename = 'filify.conf'
 endif
 
 " Recusively look into the parent directory
 " until the config file is found (stop at the root)
-if(!exists("g:filify_recurse"))
+if(!exists('g:filify_recurse'))
    let g:filify_recurse = 1
 endif
 
 " Which separator to use when storing the file
 " into the variable
-if(!exists("g:filify_sep"))
-   let g:filify_sep = " "
+if(!exists('g:filify_sep'))
+   let g:filify_sep = ' '
+endif
+
+" Which string to return if no file has been found
+" usefull for default options
+if(!exists('g:default_return'))
+   let g:default_return = ' '
 endif
 
 " Functions
@@ -34,11 +40,11 @@ endif
 
 " Go to parent
 function! Filify#parent(path)
-   return fnamemodify(a:path, ":p:h:h")
+   return fnamemodify(a:path, ':p:h:h')
 endfunction
 
 " Store a file into a variable
 function! Filify#file2var(file, ...)
-   let sep = (a:0 >= 1)? a:1 : " "
-   return join(readfile(a:file), sep)
+   let l:sep = (a:0 >= 1)? a:1 : ' '
+   return join(readfile(a:file), l:sep)
 endfunction
