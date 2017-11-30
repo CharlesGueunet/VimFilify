@@ -1,28 +1,40 @@
 " File: Filify.vim
 " Author: Charles Gueunet
 " Description: Load a config file in a variable.
-" Last Modified: November 14, 2017
+" Last Modified: November 30, 2017
 
-function! Filify#process(...) abort
-    let l:filename   = (a:0 >= 1)? a:1 : g:filify_filename
-    let l:recurse    = (a:0 >= 2)? a:2 : g:filify_recurse
-    let l:sep        = (a:0 >= 3)? a:3 : g:filify_sep
-    let l:return     = (a:0 >= 4)? a:4 : g:default_return
-    let l:workingdir = (a:0 >= 5)? a:5 : getcwd()
+" Example
+" let g:config = Filify#process(".myconf")
+"
+" For ale:
+" let g:ale_cpp_clang_options = Filify#process(".clang_config", {'default_return':'-std=c++14'})
 
-    let l:foundFile = globpath(l:workingdir, l:filename)
+function! Filify#process(filename, ...) abort
+   if a:0 >= 1
+      if type(a:1) == v:t_dict 
+         let l:params = a:1
+      else
+         echom 'VimFilify: bad args in Filify#process, need a dictionary'
+      endif
+   else
+      let l:params = {}
+   endif
 
-    if l:foundFile !=# ''
-        return Filify#file2var(l:foundFile, l:sep)
-    elseif l:recurse != 0
-        let l:parent = Filify#parent(l:workingdir)
-        if l:parent ==# '/'
-            " stop at the root
-            let l:recurse = 0
-        endif
-        return Filify#process(l:filename, l:recurse, l:sep, l:return, l:parent)
-    endif
+   if !has_key(l:params, 'recurse')
+      let l:params.recurse = g:filify_recurse
+   endif
 
-    " file not found
-    return g:default_return
+   if !has_key(l:params, 'sep')
+      let l:params.sep = g:filify_sep
+   endif
+
+   if !has_key(l:params, 'default_return')
+      let l:params.default_return = g:filify_default_return
+   endif
+
+   if !has_key(l:params, 'dir')
+      let l:params.dir =  getcwd()
+   endif
+
+   return Filify#process_main(a:filename, l:params.recurse, l:params.sep, l:params.default_return, l:params.dir)
 endfunction
