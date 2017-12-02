@@ -38,3 +38,24 @@ function! Filify#process(filename, ...) abort
 
    return Filify#process_main(a:filename, l:params.recurse, l:params.sep, l:params.default_return, l:params.dir)
 endfunction
+
+function! Filify#process_main(filename, recurse, sep, default_return, dir) abort
+
+   let l:foundFile = globpath(a:dir, a:filename)
+   let l:continue = a:recurse
+
+   if l:foundFile !=# ''
+      return Filify#file2var(l:foundFile, a:sep)
+   elseif l:continue != 0
+      let l:parent = Filify#parent(a:dir)
+      if l:parent ==# '/'
+         " stop at the root
+         let l:continue = 0
+      endif
+      return Filify#process_main(a:filename, l:continue, a:sep, a:default_return, l:parent)
+   endif
+
+   " file not found
+   return a:default_return
+endfunction
+
