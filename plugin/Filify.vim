@@ -3,6 +3,14 @@
 " Description: Load a config file in a variable.
 " Last Modified: November 14, 2017
 
+" Example
+"""""""""
+
+" let g:config = Filify#process(".myconf")
+"
+" For ale:
+" let g:ale_cpp_clang_options = Filify#process(".clang_config", {'default_return':'-std=c++14'})
+
 " Variables
 """""""""""
 
