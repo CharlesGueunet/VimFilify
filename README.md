@@ -11,22 +11,20 @@ it in your `.vim` folder
 __How to use__
 --------------
 
-The `Filify#process()` function will return the content of a file
-as a String. It takes several parameters.
+The `Filify#process('filename', ...)` function will return the content of a file
+as a String.
 
-The name of the config file to use. You can either use the `g:filify_filename`
-or pass it as the first parameter of the `Filify#process()` function.
+The first parameter is the name of the config file to look up.
+The you can pass a dictionary with the optional following parameters:
 
-This function can search for the config file recursively onto the parent until
-the file is found or the root is reached. You can enable/disable this behaviour
-using the `g:filify_recurse` variable or the second parameter of the function.
+* `default_return`: A string to return in case no file has been found
+* `sep`: The character to use in the output string to join the line of the config file
+* `recurse`: Either you want the config file to be searched recursively until the root or not
+* `dir`: Specify another location than the current project
 
-In the resulting string, each line of the config file is separated by a character.
-The default one is a space, but you can change it using either the `g:filify_sep`
-variable of the third parameter of the function.
+You can tweak the default behaviour corresponding to each entry using global variables.
+See the `plugin/Filify.vim` file for more documentation.
 
-This architecture allows filify to be used for several variable if you use the arguments
-of the `Filify#process()` function.
 
 __Copyright__
 -------------
