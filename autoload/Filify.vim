@@ -8,6 +8,9 @@
 "
 " For ale:
 " let g:ale_cpp_clang_options = Filify#process(".clang_config", {'default_return':'-std=c++14'})
+"
+" Check if file exists:
+" let g:file_to_process = Filify#process(".myconf", {'check_only':1})
 
 function! Filify#process(filename, ...) abort
    if a:0 >= 1
@@ -21,41 +24,57 @@ function! Filify#process(filename, ...) abort
    endif
 
    if !has_key(l:params, 'recurse')
-      let l:params.recurse = g:filify_recurse
+      let l:params.recurse = 1
    endif
 
    if !has_key(l:params, 'sep')
-      let l:params.sep = g:filify_sep
+      let l:params.sep = ' '
    endif
 
    if !has_key(l:params, 'default_return')
-      let l:params.default_return = g:filify_default_return
+      let l:params.default_return = ' '
    endif
 
    if !has_key(l:params, 'dir')
       let l:params.dir =  getcwd()
    endif
 
-   return Filify#process_main(a:filename, l:params.recurse, l:params.sep, l:params.default_return, l:params.dir)
+   if has_key(l:params, 'check_only')
+      let l:params.check_only = 1
+   else
+      let l:params.check_only = 0
+   endif
+
+   return Filify#process_main(a:filename, l:params.check_only, l:params.recurse, l:params.sep, l:params.default_return, l:params.dir)
 endfunction
 
-function! Filify#process_main(filename, recurse, sep, default_return, dir) abort
+function! Filify#process_main(filename, check_only, recurse, sep, default_return, dir) abort
 
    let l:foundFile = globpath(a:dir, a:filename)
    let l:continue = a:recurse
 
    if l:foundFile !=# ''
-      return Filify#file2var(l:foundFile, a:sep)
+      " file found
+      if a:check_only
+         return 1
+      else
+         return Filify#file2var(l:foundFile, a:sep)
+      endif
    elseif l:continue != 0
+      " go up
       let l:parent = Filify#parent(a:dir)
       if l:parent ==# '/'
          " stop at the root
          let l:continue = 0
       endif
-      return Filify#process_main(a:filename, l:continue, a:sep, a:default_return, l:parent)
+      return Filify#process_main(a:filename, a:check_only, l:continue, a:sep, a:default_return, l:parent)
    endif
 
    " file not found
-   return a:default_return
+   if a:check_only
+      return 0
+   else
+      return a:default_return
+   endif
 endfunction
 

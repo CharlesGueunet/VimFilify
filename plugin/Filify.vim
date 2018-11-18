@@ -10,30 +10,9 @@
 "
 " For ale:
 " let g:ale_cpp_clang_options = Filify#process(".clang_config", {'default_return':'-std=c++14'})
-
-" Variables
-"""""""""""
-
-" These variable are not mandatory as the process function
-" is may receive everything as parameters.
-" See the autolad/Filify.vim file for examples.
-
-" Recusively look into the parent directory
-" until the config file is found (stop at the root)
-if(!exists('g:filify_recurse'))
-   let g:filify_recurse = 1
-endif
-
-" Which separator to use when storing the file
-" into a string
-if(!exists('g:filify_sep'))
-   let g:filify_sep = ' '
-endif
-
-" Which string to return if no file has been found
-if(!exists('g:filify_default_return'))
-   let g:filify_default_return = ' '
-endif
+"
+" Check if file exists:
+" let g:file_to_process = Filify#process(".myconf", {'check_only':1})
 
 " Tools
 """""""""""
